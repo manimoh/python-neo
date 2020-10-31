@@ -63,6 +63,8 @@ class NeuralynxRawIO(BaseRawIO):
         """
         self.dirname = dirname
         self.keep_original_times = keep_original_times
+        # Edit by @manishm: Added exclude file list
+        self._skip_ncs = kargs.get('exclude_files',[])
         BaseRawIO.__init__(self, **kargs)
 
     def _source_name(self):
@@ -106,6 +108,10 @@ class NeuralynxRawIO(BaseRawIO):
             if (os.path.getsize(filename) <= NlxHeader.HEADER_SIZE) and ext in ['ncs']:
                 self._empty_ncs.append(filename)
                 continue
+            # Edit by @manishm: Skip files if present in exclude list
+            if filename in self.skip_ncs:
+                continue
+
 
             # All file have more or less the same header structure
             info = NlxHeader.buildForFile(filename)
