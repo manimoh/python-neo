@@ -27,7 +27,7 @@ class NeuralynxIO(NeuralynxRawIO, BaseFromRaw):
     mode = 'dir'
 
     def __init__(self, dirname, use_cache=False, cache_path='same_as_resource',
-                 keep_original_times=False):
+                 keep_original_times=False, exclude_files=[]):
         """
         Initialise IO instance
 
@@ -45,7 +45,9 @@ class NeuralynxIO(NeuralynxRawIO, BaseFromRaw):
             Preserve original time stamps as in data files. By default datasets are
             shifted to begin at t_start = 0*pq.second.
             Default: False
+        exclude_files : list
+            List of .ncs files to be excluded from creating neo-reader object
         """
         NeuralynxRawIO.__init__(self, dirname=dirname, use_cache=use_cache,
-                                cache_path=cache_path, keep_original_times=keep_original_times)
+                                cache_path=cache_path, keep_original_times=keep_original_times, exclude_files=exclude_files)
         BaseFromRaw.__init__(self, dirname)

@@ -51,7 +51,7 @@ class NeuralynxRawIO(BaseRawIO):
     extensions = ['nse', 'ncs', 'nev', 'ntt']
     rawmode = 'one-dir'
 
-    def __init__(self, dirname='', keep_original_times=False, **kargs):
+    def __init__(self, dirname='', keep_original_times=False, exclude_files=[], **kargs):
         """
         Parameters
         ----------
@@ -60,11 +60,13 @@ class NeuralynxRawIO(BaseRawIO):
         keep_original_times:
             if True, keep original start time as in files,
             otherwise set 0 of time to first time in dataset
+        exclude_files : list
+            List of .ncs files to be excluded from creating neo-reader object
         """
         self.dirname = dirname
         self.keep_original_times = keep_original_times
         # Edit by @manishm: Added exclude file list
-        self._skip_ncs = kargs.get('exclude_files',[])
+        self._skip_ncs = [os.path.join(dirname, x) for x in exclude_files]
         BaseRawIO.__init__(self, **kargs)
 
     def _source_name(self):
@@ -109,7 +111,7 @@ class NeuralynxRawIO(BaseRawIO):
                 self._empty_ncs.append(filename)
                 continue
             # Edit by @manishm: Skip files if present in exclude list
-            if filename in self.skip_ncs:
+            if filename in self._skip_ncs:
                 continue
 
 
